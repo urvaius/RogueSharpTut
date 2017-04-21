@@ -19,6 +19,22 @@ namespace RogueSharpTut.Core
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
         }
+
+        // this method will be called any time we move the player to update field of view
+        public void UpdatePlayerFieldOfView()
+        {
+            Player player = Game.Player;
+            //compute the field of vew based on the players location and awareness
+            ComputeFov(player.X, player.Y, player.Awareness, true);
+            //mark all cells in field of vew as having been explored
+            foreach(Cell cell in GetAllCells())
+            {
+                if(IsInFov(cell.X, cell.Y))
+                {
+                    SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
+                }
+            }
+        }
         private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
         {
             //when we havent explored a cell yet we odn't want to draw anything

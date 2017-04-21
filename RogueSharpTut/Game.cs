@@ -36,7 +36,7 @@ namespace RogueSharpTut
         private static readonly int _inventoryWidth = 80;
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
-
+        public static Player Player { get; private set; }
         public static DungeonMap DungeonMap { get; private set; }
 
             
@@ -57,11 +57,15 @@ namespace RogueSharpTut
             _messageConsole = new RLConsole(_messageWidth, _messageHeight);
             _statConsole = new RLConsole(_mapWidth, _mapHeight);
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
-
+            //construct player
+            Player = new Player();
             //map generator
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
             DungeonMap = mapGenerator.CreateMap();
+            DungeonMap.UpdatePlayerFieldOfView();
 
+            
+            //
 
             // Set up a handler for RLNET's Update event
             _rootConsole.Update += OnRootConsoleUpdate;
@@ -99,6 +103,8 @@ namespace RogueSharpTut
             RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
             //draw dungeon map
             DungeonMap.Draw(_mapConsole);
+            //draw player
+            Player.Draw(_mapConsole, DungeonMap);
 
 
 
