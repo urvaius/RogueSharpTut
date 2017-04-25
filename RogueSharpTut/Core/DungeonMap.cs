@@ -35,6 +35,39 @@ namespace RogueSharpTut.Core
                 }
             }
         }
+
+
+        //returns true when able to place the actor on the cell or false otherwise
+        public bool SetActorPostion(Actor actor, int x, int y)
+        {
+            //only allow actor placement if the cell is walkable
+            if(GetCell(x,y).IsWalkable)
+            {
+                // the cell the actor was perviously on is now walkable
+                SetIsWalkable(actor.X, actor.Y, true);
+                //update the actors position
+                actor.X = x;
+                actor.Y = y;
+                // the new cell the actor is on is now not walkavble
+                SetIsWalkable(actor.X, actor.Y, false);
+                // update the filed of view if we just reposition the player
+                if(actor is Player)
+                {
+                    UpdatePlayerFieldOfView();
+                }
+                return true;
+
+            }
+            return false;
+        }
+
+        // helper method for setting the iswalkable property on a cell
+        public void SetIsWalkable(int x, int y, bool isWalkable)
+        {
+            Cell cell = GetCell(x, y);
+            SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
+        }
+
         private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
         {
             //when we havent explored a cell yet we odn't want to draw anything
