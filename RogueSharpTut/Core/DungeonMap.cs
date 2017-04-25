@@ -9,6 +9,14 @@ namespace RogueSharpTut.Core
 {
     public class DungeonMap : Map
     {
+
+        public List<Rectangle> Rooms;
+
+        public DungeonMap()
+        {
+            //initialize the list of rooms when we crate a new dungeonmap
+            Rooms = new List<Rectangle>();
+        }
         // the draw method will be called each time the map is updated
         //it will render all of the symbols colors for each cell to the map sub console
         public void Draw(RLConsole mapConsole)
@@ -19,7 +27,13 @@ namespace RogueSharpTut.Core
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
         }
-
+        //called by mapgenerator after we generate a new map to add the player to the map
+        public void AddPlayer(Player player)
+        {
+            Game.Player = player;
+            SetIsWalkable(player.X, player.Y, false);
+            UpdatePlayerFieldOfView();
+        }
         // this method will be called any time we move the player to update field of view
         public void UpdatePlayerFieldOfView()
         {

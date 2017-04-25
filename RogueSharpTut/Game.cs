@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RLNET;
 using RogueSharpTut.Core;
 using RogueSharpTut.Systems;
+using RogueSharp.Random;
 
 namespace RogueSharpTut
 {
@@ -36,19 +37,24 @@ namespace RogueSharpTut
         private static readonly int _inventoryWidth = 80;
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
-        public static Player Player { get; private set; }
+        public static Player Player { get;  set; }
         public static DungeonMap DungeonMap { get; private set; }
         private static bool _renderRequired = true;
         public static CommandSystem CommandSystem { get; private set; }
+        // a singleton of irandom use throughtou the game when generating random numbers
+        public static IRandom Random { get; private set; }
             
 
 
 
         static void Main()
         {
+            //establish the seed for the random number generator from the current time
+            int seed = (int)DateTime.UtcNow.Ticks;
+            Random = new DotNetRandom(seed);
             string fontFileName = "terminal8x8.png";
             // The title will appear at the top of the console window
-            string consoleTitle = "RougeSharp V3 Tutorial - Level 1";
+            string consoleTitle = $"RougeSharp V3 Tutorial - Level 1 - Seed {seed}";
             // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight,
               8, 8, 1f, consoleTitle);
@@ -72,11 +78,10 @@ namespace RogueSharpTut
 
             _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Swatch.DbWood);
             _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
-            //construct player
-            Player = new Player();
+            
             //map generator
 
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight,20,13,7);
             DungeonMap = mapGenerator.CreateMap();
             DungeonMap.UpdatePlayerFieldOfView();
             //command system
