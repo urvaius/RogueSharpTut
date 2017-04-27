@@ -43,6 +43,7 @@ namespace RogueSharpTut
         public static CommandSystem CommandSystem { get; private set; }
         // a singleton of irandom use throughtou the game when generating random numbers
         public static IRandom Random { get; private set; }
+        public static MessageLog MessageLog { get; private set; }
             
 
 
@@ -70,8 +71,10 @@ namespace RogueSharpTut
             _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
             _mapConsole.Print(1, 1, "Map", Colors.TextHeading);
 
-            _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Swatch.DbDeepWater);
-            _messageConsole.Print(1, 1, "Messages", Colors.TextHeading);
+            // create a new message log and print hte random seed used to generate the level
+            MessageLog = new MessageLog();
+            MessageLog.Add("The rogue arrives on level 1");
+            MessageLog.Add($"Level created with seed '{seed}'");
 
             _statConsole.SetBackColor(0, 0, _statWidth, _statHeight, Swatch.DbOldStone);
             _statConsole.Print(1, 1, "Stats", Colors.TextHeading);
@@ -142,8 +145,12 @@ namespace RogueSharpTut
             {
                 //draw dungeon map
                 DungeonMap.Draw(_mapConsole);
+                //draw message log
+                MessageLog.Draw(_messageConsole);
                 //draw player
                 Player.Draw(_mapConsole, DungeonMap);
+                //draw stats
+                Player.DrawStats(_statConsole);
                 // blit the sub consoles to the root console in the correct locations
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
                 RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _mapWidth, 0);

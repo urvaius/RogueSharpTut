@@ -11,11 +11,53 @@ namespace RogueSharpTut.Core
     {
 
         public List<Rectangle> Rooms;
+        private readonly List<Monster> _monsters;
 
         public DungeonMap()
         {
             //initialize the list of rooms when we crate a new dungeonmap
             Rooms = new List<Rectangle>();
+            _monsters = new List<Monster>();
+        }
+
+        // adding monsters
+        public void AddMonster(Monster monster)
+        {
+            _monsters.Add(monster);
+            // after adding the monster to the map make sure to make teh cell not walkable
+            SetIsWalkable(monster.X, monster.Y, false);
+        }
+        //look for a random location in the room that is walkable
+        public Point GetRandomWalkableLocationInRoom(Rectangle room)
+        {
+            if(DoesRoomHaveWalkableSpace(room))
+            {
+                for (int i = 0;i< 100;i++)
+                {
+
+                    int x = Game.Random.Next(1, room.Width - 2) + room.X;
+                    int y = Game.Random.Next(1, room.Height - 2) + room.Y;
+                    if (IsWalkable(x, y))
+                    {
+                        return new Point(x, y);
+                    }
+                }
+            }
+            return null;
+        }
+        public bool DoesRoomHaveWalkableSpace(Rectangle room)
+        {
+            for (int x = 1; x <= room.Width - 2; x++)
+            {
+                for (int y = 1; y <= room.Height - 2; y++)
+                {
+                    if (IsWalkable(x + room.X, y + room.Y))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         // the draw method will be called each time the map is updated
         //it will render all of the symbols colors for each cell to the map sub console
@@ -25,6 +67,11 @@ namespace RogueSharpTut.Core
             foreach(Cell cell in GetAllCells())
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
+            }
+            // draw each monster on the map
+            foreach(Monster monster in _monsters)
+            {
+                monster.Draw(mapConsole, this);
             }
         }
         //called by mapgenerator after we generate a new map to add the player to the map
