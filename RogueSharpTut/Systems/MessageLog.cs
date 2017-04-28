@@ -36,7 +36,7 @@ namespace RogueSharpTut.Systems
         // draw each line of the messagelog queue to the console
         public void Draw(RLConsole console)
         {
-            console.Clear();
+            
             string[] lines = _lines.ToArray();
             for (int i=0;i< lines.Length;i++)
             {

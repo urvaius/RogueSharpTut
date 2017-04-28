@@ -143,8 +143,11 @@ namespace RogueSharpTut
         {
             if (_renderRequired)
             {
+                _mapConsole.Clear();
+                _statConsole.Clear();
+                _messageConsole.Clear();
                 //draw dungeon map
-                DungeonMap.Draw(_mapConsole);
+                DungeonMap.Draw(_mapConsole,_statConsole);
                 //draw message log
                 MessageLog.Draw(_messageConsole);
                 //draw player
